@@ -17,13 +17,14 @@ class CustomUser(AbstractUser):
         unique=True,
         help_text="Phone number (required)",
     )
-    is_verified = models.BooleanField(default=False)
     user_role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
         default=UserRole.CUSTOMER,
     )
+    user_name = models.CharField(max_length=150, unique=True)
 
+    is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -55,3 +56,7 @@ class CustomUser(AbstractUser):
     @property
     def is_customer(self):
         return self.user_role == UserRole.CUSTOMER
+
+    def save(self, *args, **kwargs):
+        self.user_name = f"user_{self.phone_number[-4:]}"
+        super().save(*args, **kwargs)
