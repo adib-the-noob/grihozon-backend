@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from .models import CustomUser
+from .models import CustomUser, OTP
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -72,3 +72,25 @@ class CustomUserAdmin(BaseUserAdmin):
             },
         ),
     )
+
+
+@admin.register(OTP)
+class OTPAdmin(admin.ModelAdmin):
+    list_display = (
+        "get_phone_number",
+        "code",
+        "created_at",
+        "expires_at",
+        "is_expired",
+    )
+    search_fields = ("user__phone_number", "code")
+    list_filter = ("created_at",)
+    ordering = ("-created_at",)
+
+    @admin.display(description="Phone Number")
+    def get_phone_number(self, obj):
+        return obj.user.phone_number
+
+    @admin.display(boolean=True, description="Expired")
+    def is_expired(self, obj):
+        return obj.is_expired
