@@ -3,11 +3,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-class NewCustomerOnBoardingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            'id',
-            'phone_number',
-
-        ]
+class NewCustomerOnBoardingSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=15)
+    
