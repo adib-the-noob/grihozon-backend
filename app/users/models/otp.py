@@ -9,6 +9,7 @@ OTP_EXPIRATION_MINUTES = 5
 def get_otp_expiration():
     return timezone.now() + timedelta(minutes=OTP_EXPIRATION_MINUTES)
 
+
 class OTPManager(models.Manager):
     def get_queryset(self):
         qs = super().get_queryset()
@@ -19,9 +20,11 @@ class OTPManager(models.Manager):
         self.filter(user=user).delete()
         return self.create(user=user, code=code)
 
+
 class OTP(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="otps")
     code = models.CharField(max_length=6, help_text="OTP Code")
+    is_used = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(default=get_otp_expiration)

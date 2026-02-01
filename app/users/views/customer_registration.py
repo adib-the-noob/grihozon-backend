@@ -6,7 +6,9 @@ from ..serializers.user_registration import (
     UserRegistrationOTPRequest,
     UserRegistrationSerializer,
 )
+from ..jwt import get_access_token, get_refresh_token
 from ..tasks.otp_service import send_otp
+from ..models.otp import OTP
 
 User = get_user_model()
 
@@ -23,9 +25,33 @@ def request_registration_otp(request):
         new_user = User(phone_number=serializer.validated_data["phone_number"])
         new_user.set_unusable_password()
         new_user.save()
-        send_otp.delay(new_user.phone_number, "123456")
+        otp = OTP.objects.create(user=new_user, code="123456")
+        send_otp.delay(new_user.phone_number, otp.code)
         return APIResponse.success(
             data={"phone_number": new_user.phone_number},
             message="OTP sent successfully.",
+        )
+    return APIResponse.error(message="Invalid data.", errors=serializer.errors)
+
+
+@api_view(["POST"])
+def register_user(request):
+    serializer = UserRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        otp = OTP.objects.filter(
+            user__phone_number=serializer.validated_data["phone_number"],
+            code=serializer.validated_data["otp"],
+            is_used=False,
+        ).first()
+        if not otp:
+            return APIResponse.error(message="Invalid or used OTP.")
+        user = otp.user
+        user.is_verified = True
+        user.save()
+        otp.is_used = True
+        otp.save()
+        return APIResponse.success(
+            data={"user_id": user.id, "phone_number": user.phone_number},
+            message="User registered successfully.",
         )
     return APIResponse.error(message="Invalid data.", errors=serializer.errors)

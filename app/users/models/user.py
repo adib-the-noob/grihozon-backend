@@ -1,6 +1,6 @@
+import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.validators import RegexValidator
 
 
 class UserRole(models.TextChoices):
@@ -11,7 +11,9 @@ class UserRole(models.TextChoices):
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(blank=True, null=True, help_text="Email address (optional)")
+    email = models.EmailField(
+        blank=True, null=True, help_text="Email address (optional)"
+    )
     phone_number = models.CharField(
         max_length=17,
         unique=True,
@@ -36,6 +38,16 @@ class CustomUser(AbstractUser):
             models.Index(fields=["user_role"]),
             models.Index(fields=["is_verified"]),
         ]
+
+    def save(self, *args, **kwargs):
+        if not self.username:
+            # Auto-generate username from phone number or UUID
+            self.username = (
+                f"user_{self.phone_number}"
+                if self.phone_number
+                else f"user_{uuid.uuid4().hex[:12]}"
+            )
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.username} ({self.phone_number})"
