@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from config.responses import APIResponse
 from products.models.products import Product
-from products.serializers import ProductSerializer
+from ..serializers.product_serializers import ProductSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
