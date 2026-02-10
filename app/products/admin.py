@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models.brands import Brand, Manufacturer, Country
 from .models.category import Category
-from .models.products import Product, ProductVariant, ProductImage, ProductType
+from .models.products import Product, ProductVariant, Media, ProductType
 
 
 @admin.register(Product)
@@ -32,9 +32,9 @@ class ProductVariantAdmin(admin.ModelAdmin):
     ordering = ("-id",)
 
 
-@admin.register(ProductImage)
-class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ("product", "image_url", "is_primary", "sort_order")
+@admin.register(Media)
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ("product", "is_primary", "sort_order")
     search_fields = ("product__name",)
     list_filter = ("is_primary",)
     ordering = ("product", "sort_order")
