@@ -11,14 +11,8 @@ class UserRole(models.TextChoices):
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(
-        blank=True, null=True, help_text="Email address (optional)"
-    )
-    phone_number = models.CharField(
-        max_length=17,
-        unique=True,
-        help_text="Phone number (required)",
-    )
+    email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=17, unique=True)
     user_role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
@@ -34,14 +28,12 @@ class CustomUser(AbstractUser):
 
     class Meta:
         indexes = [
-            models.Index(fields=["phone_number"]),
             models.Index(fields=["user_role"]),
             models.Index(fields=["is_verified"]),
         ]
 
     def save(self, *args, **kwargs):
         if not self.username:
-            # Auto-generate username from phone number or UUID
             self.username = (
                 f"user_{self.phone_number}"
                 if self.phone_number
