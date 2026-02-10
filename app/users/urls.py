@@ -3,7 +3,8 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from .views.customer_registration import ( 
     request_registration_otp, 
-    register_user
+    register_user, 
+    me
 )
 
 from .jwt import CustomTokenObtainPairView
@@ -17,4 +18,7 @@ urlpatterns = [
     # Registration
     path("request-otp/", request_registration_otp, name="request_registration_otp"),
     path("register/", register_user, name="register_user"), 
+
+    # User profile
+    path("me/", me, name="user_profile"),
 ]

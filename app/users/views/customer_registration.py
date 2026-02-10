@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import api_view
 
 from config.responses import APIResponse
@@ -9,6 +10,7 @@ from ..serializers.user_registration import (
 from ..jwt import get_access_token, get_refresh_token
 from ..tasks.otp_service import send_otp
 from ..models.otp import OTP
+from ..jwt import get_access_token
 
 User = get_user_model()
 
@@ -51,7 +53,30 @@ def register_user(request):
         otp.is_used = True
         otp.save()
         return APIResponse.success(
-            data={"user_id": user.id, "phone_number": user.phone_number},
+            data={
+                "user_id": user.id,
+                "phone_number": user.phone_number,
+                "tokens": {
+                    "access": get_access_token(user),
+                    "refresh": get_refresh_token(user),
+                },
+            },
             message="User registered successfully.",
         )
     return APIResponse.error(message="Invalid data.", errors=serializer.errors)
+
+
+@api_view(["POST"])
+def me(request):
+    user = request.user
+    if not user.is_authenticated:
+        return APIResponse.error(message="Authentication required.")
+    return APIResponse.success(
+        data={
+            "user_id": user.id,
+            "phone_number": user.phone_number,
+            "user_role": user.user_role,
+            "is_verified": user.is_verified,
+        },
+        message="User details retrieved successfully.",
+    )
