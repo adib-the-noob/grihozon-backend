@@ -105,7 +105,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 # Custom User Model
-AUTH_USER_MODEL = "users.CustomUser"
+AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {

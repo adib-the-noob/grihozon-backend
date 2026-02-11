@@ -1,7 +1,7 @@
-from .user import CustomUser
+from .user import User
 from .otp import OTP
 
 __all__ = [
-    "CustomUser",
+    "User",
     "OTP"
 ]

@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models.products import Product, ProductVariant, ProductImage
+from ..models.products import Product, ProductVariant, Media
 
 
-class ProductImageSerializer(serializers.ModelSerializer):
+class MediaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductImage
+        model = Media
         fields = ["id", "image_url", "sort_order", "is_primary"]
 
 
@@ -24,9 +24,10 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "is_active",
         ]
 
+
 class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
-    images = ProductImageSerializer(many=True, read_only=True)
+    images = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
-from ..models.user import CustomUser
+from ..models.user import User
 
 OTP_EXPIRATION_MINUTES = 5
 
@@ -22,7 +22,7 @@ class OTPManager(models.Manager):
 
 
 class OTP(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="otps")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="otps")
     code = models.CharField(max_length=6, help_text="OTP Code")
     is_used = models.BooleanField(default=False)
 
