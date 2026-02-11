@@ -1,5 +1,5 @@
 from .brands import Brand, Manufacturer, Country
-from .products import Product, ProductVariant, ProductType, Media
+from .products import Product, ProductVariant, ProductType, Media, Unit
 from .category import Category
 
 __all__ = [
@@ -11,4 +11,5 @@ __all__ = [
     "ProductType",
     "Media",
     "Category",
+    "Unit",
 ]
