@@ -5,7 +5,7 @@ from ..models.products import Product, ProductVariant, Media
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
-        fields = ["id", "image_url", "sort_order", "is_primary"]
+        fields = "__all__"
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
-    images = MediaSerializer(many=True, read_only=True)
+    media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -40,10 +40,10 @@ class ProductSerializer(serializers.ModelSerializer):
             "category",
             "manufacturer",
             "origin_country",
-            "type",
+            "product_type",
             "is_active",
             "created_at",
             "updated_at",
             "variants",
-            "images",
+            "media",
         ]
