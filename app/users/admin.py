@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from .models import User, OTP
+from .models import User, OTP, UserAddress
 
 
 class UserCreationForm(UserCreationForm):
@@ -94,3 +94,24 @@ class OTPAdmin(admin.ModelAdmin):
     @admin.display(boolean=True, description="Expired")
     def is_expired(self, obj):
         return obj.is_expired
+
+
+@admin.register(UserAddress)
+class UserAddressAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "address_line1",
+        "city",
+        "state",
+        "postal_code",
+        "country",
+    )
+    search_fields = (
+        "user__phone_number",
+        "user__username",
+        "address_line1",
+        "city",
+        "country",
+    )
+    list_filter = ("city", "state", "country")
+    raw_id_fields = ("user",)
