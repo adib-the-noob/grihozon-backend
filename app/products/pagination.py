@@ -14,3 +14,4 @@ class CategoryProductPagination(PageNumberPagination):
             "page": self.page.number,
             "total_pages": self.page.paginator.num_pages,
         }
+    
