@@ -32,5 +32,22 @@ while [ $attempt -le $max_attempts ]; do
   fi
 done
 
+# Check if database needs seeding
+echo "Checking if database needs seeding..."
+PRODUCT_COUNT=$(python -c "
+import django
+django.setup()
+from products.models import Product
+print(Product.objects.count())
+" 2>/dev/null || echo "0")
+
+if [ "$PRODUCT_COUNT" = "0" ]; then
+  echo "No products found - seeding database with sample data..."
+  python manage.py seed_products
+  echo "Database seeding completed"
+else
+  echo "Database already has $PRODUCT_COUNT products - skipping seed"
+fi
+
 echo "Starting application..."
 exec "$@"
