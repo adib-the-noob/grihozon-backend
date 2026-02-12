@@ -47,3 +47,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "variants",
             "media",
         ]
+
+
+class ProductSearchSerializer(serializers.Serializer):
+    q = serializers.CharField(required=False, allow_blank=True, max_length=255)
