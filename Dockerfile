@@ -23,19 +23,11 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 # Copy project
 COPY . .
 
-# Copy and set permissions for entrypoint scripts
-COPY entrypoint.sh /entrypoint.sh
-COPY celery-entrypoint.sh /celery-entrypoint.sh
-RUN chmod +x /entrypoint.sh /celery-entrypoint.sh
-
 # Set work directory to app folder
 WORKDIR /app/app
 
 # Expose port
 EXPOSE 8000
 
-# Default entrypoint (web service)
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Run the application
+# Default command (can be overridden by docker-compose)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
